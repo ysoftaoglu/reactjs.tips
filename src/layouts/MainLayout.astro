@@ -1,0 +1,92 @@
+---
+import { ViewTransitions } from 'astro:transitions'
+
+import Header from '@components/Header.astro'
+import Footer from '@components/Footer.astro'
+
+const {
+	title,
+	description,
+	keywords,
+	url = Astro.url,
+	ogImage,
+	date,
+	isArticle = false
+} = Astro.props
+
+const schema = {
+  '@context': 'https://schema.org',
+	'mainEntityOfPage': {
+		'@type': 'WebPage',
+		'@id': url
+	},
+  '@type': 'BlogPosting',
+  'headline': title,
+  'description': description,
+	'image': ogImage,
+  'keywords': keywords,
+  'author': {
+    '@type': 'Person',
+    'name': 'Yasin Softaoğlu',
+    'url': 'https://reactjs.tips'
+  },
+  'datePublished': new Date(date)
+}
+
+const titleWithSiteName = title + ' | Reactjs.tips'
+const siteOrigin = Astro.site.origin
+---
+
+<html transition:animate="none" lang="tr">
+	<head>
+		<meta charset="utf-8" />
+		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<meta name="viewport" content="width=device-width" />
+		<meta name="theme-color" content="#fde047" >
+		<title>{titleWithSiteName}</title>
+
+
+		<!-- SEO -->
+		<link rel="canonical" href={url} />
+		{keywords && <meta name="keywords" content={keywords.join(', ')} />}
+		{description && <meta name="description" content={description} />}
+
+
+		<!-- Open Graph -->
+		<meta property="og:site_name" content="Reactjs Tips" />
+		<meta property="og:title" content={titleWithSiteName} />
+		<meta property="og:url" content={url} />
+		<meta name="author" content="Yasin Softaoğlu" />
+		
+		{description && <meta property="og:description" content={description} />}
+		{ogImage && <meta property="og:image" content={siteOrigin + ogImage} />}
+
+		{date && <meta property="article:published_time" content={date} />}
+
+		<!-- Twitter Card -->
+    <meta name="twitter:creator" content="@reactjs_tips" />
+    <meta name="twitter:title" content={titleWithSiteName} />
+    {description && <meta name="twitter:description" content={description} />}
+    {ogImage && <meta name="twitter:card" content="summary_large_image" />}
+		{ogImage && <meta name="twitter:image:src" content={siteOrigin + ogImage} />}
+
+		{isArticle && <script type="application/ld+json" set:html={JSON.stringify(schema)} />}
+
+		<ViewTransitions />
+	</head>
+	<body class="text-slate-900 dark:text-zinc-400 antialiased min-h-screen bg-gradient-to-b from-gray-100 dark:from-zinc-900 dark:to-zinc-900 selection:bg-yellow-200 selection:text-zinc-950 border-t-4 border-t-slate-900 dark:border-t-yellow-300 flex flex-col">
+		<Header />
+
+		<main class="max-w-3xl w-full mx-auto pb-8 lg:pb-16 px-4 lg:px-8">
+			<slot />
+		</main>
+
+		<Footer />
+	</body>
+</html>
+
+<style is:global>
+a:active, button:active {
+	transform: scale(.99);
+}
+</style>

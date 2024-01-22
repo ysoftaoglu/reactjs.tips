@@ -1,0 +1,40 @@
+---
+import { getCollection } from "astro:content"
+
+import MainLayout from "@layouts/MainLayout.astro"
+import ArticleCard from "@components/ArticleCard.astro"
+
+import { sortArticles } from '@utils/sortArticles'
+
+const articles = await getCollection("article")
+const sortedArticles = sortArticles(articles)
+---
+
+<MainLayout
+  title="React.js geliştiricler için best practice'ler, tavsiyeler ve ipuçları"
+  description="React.js ile ilgili design pattern, architecture, refactoring ve daha detaylı konuları ele aldığım yazı dizisi"
+  ogImage="/images/og-images/og-image-home.png"
+  keywords={["reactjs best practices", "reactjs architecture", "reactjs design patterns"]}
+>
+  <h1 class="lg:leading-relaxed text-2xl lg:text-3xl font-bold lg:mb-20 mb-8 dark:text-zinc-100">
+    React.js geliştiriciler için <span class="bg-gradient-to-r from-green-600 via-yellow-600 to-pink-600 dark:from-green-300 dark:via-yellow-300 dark:to-pink-300 bg-clip-text text-transparent">best practice'ler</span>, <span class="underline decoration-wavy underline-offset-4 decoration-sky-400">tavsiyeler</span>, <span class="relative inline-block before:content-[''] before:bg-gradient-to-r before:from-orange-300 before:to-pink-600 before:absolute before:h-1.5 before:w-full before:left-0 before:bottom-0 before:-z-10 before:rounded-sm">ipuçları</span> ve daha fazlası...
+  </h1>
+  <section class="pb-12">
+    {sortedArticles.map(({ data, slug }) => {
+      const { summary, title, date, coverImage, coverImageDescription } = data
+
+      return (
+        <ArticleCard
+          slug={slug}
+          summary={summary}
+          title={title}
+          date={date}
+          thumbnail={{
+            src: coverImage,
+            alt: coverImageDescription
+          }}
+        />
+      )
+    })}
+  </section>
+</MainLayout>

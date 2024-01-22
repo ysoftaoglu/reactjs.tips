@@ -1,0 +1,9 @@
+---
+import { Icon } from 'astro-icon/components'
+
+const currentYear = new Date().getFullYear()
+---
+
+<footer class="text-center mt-auto py-6 border-t dark:border-zinc-800 text-sm font-semibold">
+  Reactjs.tips <Icon class="text-red-600 inline mx-1" name="mdi:cards-heart" /> {currentYear}
+</footer>

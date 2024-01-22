@@ -1,0 +1,92 @@
+---
+import { getCollection } from 'astro:content'
+
+import Prose from '@layouts/Prose.astro'
+import MainLayout from '@layouts/MainLayout.astro'
+import ReleatedArticles from '@components/ReleatedArticles.astro'
+
+import { randomizeArticles } from '@utils/randomizeArticles'
+import { formatDate } from '@utils/formatDate'
+import { getReadingTime } from '@utils/getReadingTime'
+
+const { article, releatedArticles } = Astro.props
+const { ogImage, title, description, date, keywords } = article.data
+
+export async function getStaticPaths() {
+  const allArticles = await getCollection('article');
+
+  return allArticles.map((article) => ({
+    params: { slug: article.slug },
+    props: {
+      article,
+      releatedArticles: allArticles.filter(({slug}) => slug !== article.slug).slice(0, 3)
+    }
+  }))
+}
+
+const { Content } = await article.render()
+
+const formattedDate = formatDate(date)
+const readingTime = getReadingTime(article.body)
+const randomizedArticles = randomizeArticles(releatedArticles)
+const slug = article.slug
+---
+
+<MainLayout {title} {ogImage} {description} {date} {keywords} isArticle>
+  <div class="border-b dark:border-zinc-800 pb-8 mb-8">
+    <h1 class="text-3xl mb-3 font-bold leading-relaxed dark:text-zinc-100">{title}</h1>
+    <div class="flex text-sm dark:text-zinc-400 flex-wrap gap-2 lg:gap-3">
+      <div>
+        <span class="mr-1">✍️</span>
+        {formattedDate}
+      </div>
+      <span class="hidden lg:inline">•</span>
+      <div>
+        <span class="mr-1">👁️</span>
+        {readingTime} okuma
+      </div>
+      <span class="hidden lg:inline">•</span>
+      <a href="#comments">
+        <span class="mr-1">💬</span>
+        Yorumlar
+      </a>
+    </div>
+  </div>
+
+  <Prose>
+    <Content />
+    {randomizedArticles.length > 2 && <ReleatedArticles articles={randomizedArticles} />}
+  </Prose>
+
+  <section class="border-t dark:border-zinc-800 pt-8 mt-8" id="comments">
+    <h3 class="text-3xl font-bold mb-2 dark:text-zinc-100">Yorumlar</h3>
+    <p class="dark:text-zinc-400 mb-8">
+      Soru, cevap ve destekleriniz için aşağıdan yorum bırakmayı unutmayın.
+    </p>
+
+    <script
+      src="https://giscus.app/client.js"
+      data-repo="ysoftaoglu/reactjs.tips"
+      data-repo-id="MDEwOlJlcG9zaXRvcnkyNjExODU0MjA="
+      data-category="General"
+      data-category-id="DIC_kwDOD5FfjM4Ccq6C"
+      data-mapping="title"
+      data-strict="0"
+      data-reactions-enabled="1"
+      data-emit-metadata="0"
+      data-input-position="top"
+      data-theme="preferred_color_scheme"
+      data-lang="tr"
+      data-loading="lazy"
+      crossorigin="anonymous"
+      async
+    >
+    </script>
+  </section>
+</MainLayout>
+
+<style is:global>
+  .expressive-code {
+    margin-block: 32px;
+  }
+</style>

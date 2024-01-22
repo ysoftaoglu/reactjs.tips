@@ -1,0 +1,22 @@
+---
+import { getCollection } from "astro:content"
+
+import MainLayout from "@layouts/MainLayout.astro"
+import ReleatedArticles from "@components/ReleatedArticles.astro"
+
+import { randomizeArticles } from '@utils/randomizeArticles'
+
+const articles = await getCollection("article")
+const randomizedArticles = randomizeArticles(articles)
+---
+
+<MainLayout
+  title="Aradığınız sayfa bulunamadı..."
+  ogImage="/images/og-images/og-image-home.png"
+>
+  <h3 class="bg-gradient-to-r from-green-600 via-yellow-500 to-pink-600 dark:from-green-400 dark:via-yellow-400 dark:to-pink-400 bg-clip-text text-transparent font-bold text-center text-9xl">404</h3>
+  <p class="text-center text-xl font-semibold">Aradığınız sayfa bulunamadı...</p>
+  <section class="pb-12 text-center">
+    {randomizedArticles.length > 0 && <ReleatedArticles articles={randomizedArticles} />}
+  </section>
+</MainLayout>

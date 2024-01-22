@@ -1,0 +1,19 @@
+---
+import { Image } from "astro:assets"
+
+const { title, slug, summary, thumbnail } = Astro.props
+---
+
+<div class="gap-x-6 mb-10 last:mb-0 flex flex-col lg:flex-row lg:items-center">
+  <a class="flex-none w-full lg:w-56 mb-4 lg:mb-0" href={`/article/${slug}`}>
+    <Image format="avif" class="rounded-md lg:h-32" src={thumbnail.src} alt={thumbnail.alt} />
+  </a>
+  <div>
+    <a class="border-dashed font-semibold text-xl text-slate-900 dark:text-zinc-200 dark:decoration-zinc-700 underline decoration-dashed decoration-slate-300 hover:decoration-slate-400 dark:hover:decoration-zinc-500 underline-offset-8 pb-0.5 inline-block leading-relaxed" href={`/article/${slug}`}>
+      {title}
+    </a>
+    <p class="text-base mt-3">
+      {summary}
+    </p>
+  </div>
+</div>
